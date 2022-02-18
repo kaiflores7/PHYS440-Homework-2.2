@@ -22,7 +22,7 @@ import SwiftUI
 ///
 func calculateDownwardRecursion (xValue: Double, order: Int, start: Int) -> Double
 {
-    var scale = calculateFirstBessel(xValue: xValue) /* jSub0 which we know. Used for scaling the downward recursion */
+    var scale = calculateZeroBessel(xValue: xValue) /* jSub0 which we know. Used for scaling the downward recursion */
     
     var jSubl = Array(repeating: 0.0, count: start + 2) /* jSubl is an array that holds the various orders of the Bessel Function */
     
@@ -53,25 +53,30 @@ func calculateDownwardRecursion (xValue: Double, order: Int, start: Int) -> Doub
 ///
 func calculateUpwardRecursion (xValue: Double, order: Int) -> Double
 {
-    var firstBessel = 0.0  /* temporary placeholders through the upward recursion */
-    var secondBessel = 0.0 /* temporary placeholders through the upward recursion */
-    var thirdBessel = 0.0; /* holds final Bessel Function result */
+    var zeroBessel = 0.0  /* temporary placeholders through the upward recursion */
+    var firstBessel = 0.0 /* temporary placeholders through the upward recursion */
+    var finalBessel = 0.0; /* holds final Bessel Function result */
     
     
-    firstBessel = calculateFirstBessel(xValue: xValue)                    /* start with lowest order */
+    zeroBessel = calculateZeroBessel(xValue: xValue) /* start with lowest order */
+    firstBessel = calculateFirstBessel (xValue: xValue)
+    
     if (order == 0) {
-        thirdBessel = firstBessel
+        finalBessel = zeroBessel
+    }
+    else if (order == 1) {
+        finalBessel = firstBessel
     }
     else {
-        secondBessel = calculateSecondBessel(xValue: xValue)
         for index in (1..<order)             /* loop for order of function */
         {
-            thirdBessel = ((2.0*(Double(index))+1.0)/xValue)*secondBessel - firstBessel       // recursion relation
-            firstBessel = secondBessel
-            secondBessel = thirdBessel
+            finalBessel = ((2.0*(Double(index))+1.0)/xValue)*firstBessel - zeroBessel       // recursion relation
+            //update values
+            zeroBessel = firstBessel
+            firstBessel = finalBessel
         }
     }
-    return(thirdBessel)
+    return(finalBessel)
 }
 
 
@@ -80,7 +85,7 @@ func calculateUpwardRecursion (xValue: Double, order: Int) -> Double
 /// - Parameter xValue: x
 /// - Returns: first Bessel Function
 
-func calculateFirstBessel (xValue: Double) -> Double{
+func calculateZeroBessel (xValue: Double) -> Double{
     
     var j = 0.0
     
@@ -95,7 +100,7 @@ func calculateFirstBessel (xValue: Double) -> Double{
 /// - Parameter xValue: x
 /// - Returns: second Bessel Function
 
-func calculateSecondBessel (xValue: Double) -> Double{
+func calculateFirstBessel (xValue: Double) -> Double{
     
     var j = 0.0
     let sinFunc = sin(xValue) / (xValue↑(2.0))

@@ -9,7 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var guess = ""
+    @State var guess1 = ""
+    @State var guess2 = ""
+    @State var guess3 = ""
     @State private var totalInput: Int? = 18
     
     private var intFormatter: NumberFormatter = {
@@ -22,9 +24,11 @@ struct ContentView: View {
     
        VStack {
             HStack {
-                
-                TextEditor(text: $guess)
-
+                VStack {
+                    TextEditor(text: $guess1)
+                    TextEditor(text: $guess2)
+                    TextEditor(text: $guess3)
+                }
                 
                 Button("Calculate Spherical Bessel Functions", action: calculateBesselFunc)
                     }
@@ -35,7 +39,7 @@ struct ContentView: View {
         HStack{
             
             Text(verbatim: "Order:")
-            .padding()
+                .padding()
             TextField("Total", value: $totalInput, formatter: intFormatter)
         
                 .padding()
@@ -54,14 +58,16 @@ struct ContentView: View {
     let start = order+25                      /* used for downward algorithm */
     var x = 0.0
     var maxIndex = 0
-    guess = String(format: "J%d(x)\n", order)
+    guess1 = String(format: "J%d(x)\n", order)
+    guess2 = String(format: "J%d(x)\n", order)
+    guess3 = String(format: "J%d(x)\n", order)
     maxIndex = Int(((xmax-xmin)/step))+1
 
     for index in (0...maxIndex)
     {
         x = Double(index)*step + xmin
         
-        guess += String(format: "x = %f, Downward, %7.5e, Upward, %7.5e\n", x, calculateDownwardRecursion(xValue: x, order: order, start: start),   calculateUpwardRecursion(xValue: x, order: order))
+        guess1 += String(format: "x = %f, Downward, %7.5e, Upward, %7.5e\n", x, calculateDownwardRecursion(xValue: x, order: order, start: start),   calculateUpwardRecursion(xValue: x, order: order))
         
     }
         
