@@ -30,9 +30,9 @@ struct ContentView: View {
                     TextEditor(text: $guess3)
                 }
                 
-                Button("Calculate Spherical Bessel Functions", action: calculateBesselFunc)
+                Button("Calculate Test Spherical Bessel Functions", action: calculateTestBesselFunc)
                     }
-            .frame(minHeight: 300, maxHeight: 800)
+            .frame(minHeight: 500, maxHeight: 800)
             .frame(minWidth: 480, maxWidth: 800)
             .padding()
         
@@ -49,27 +49,61 @@ struct ContentView: View {
         
     }
     
-    func calculateBesselFunc()  {
+    func calculateTestBesselFunc()  {
 
-    let xmax = 16.0                     /* max of x  */
-    let xmin = 0.1                     /* min of x >0  */
-    let step = 0.1                      /* delta x  */
-    let order = totalInput ?? 0                      /* order of Bessel function */
-    let start = order+25                      /* used for downward algorithm */
-    var x = 0.0
-    var maxIndex = 0
-    guess1 = String(format: "J%d(x)\n", order)
-    guess2 = String(format: "J%d(x)\n", order)
-    guess3 = String(format: "J%d(x)\n", order)
-    maxIndex = Int(((xmax-xmin)/step))+1
+        let step = 0.1                      /* delta x  */
+        let order = totalInput ?? 0                      /* order of Bessel function */
+        let start = order+25 /* used for downward algorithm */
+        let xmin1 = 0.1
+        let xmin2 = 1.0
+        let xmin3 = 10.0
+        var x1 = 0.0
+        var x2 = 0.0
+        var x3 = 0.0
+        var downward = 0.0
+        var upward = 0.0
+        var relDiff = 0.0
 
-    for index in (0...maxIndex)
-    {
-        x = Double(index)*step + xmin
+            guess1 = String(format: "J%d(x)\n", order)
+            guess2 = String(format: "J%d(x)\n", order)
+            guess3 = String(format: "J%d(x)\n", order)
+
+        for index in (0...25)
+        {
+            x1 = Double(index)*step + xmin1
+            downward = calculateDownwardRecursion(xValue: x1, order: order, start: start)
+            upward = calculateUpwardRecursion(xValue: x1, order: order)
+                let top = abs(upward - downward)
+                let bottom = abs(upward) + abs(downward)
+            relDiff = top / bottom
+            
+            guess1 += String(format: "x = %f, Downward = %7.5e, Upward = %7.5e\n, Relative Difference = %7.5e\n", x1, downward, upward, relDiff)
         
-        guess1 += String(format: "x = %f, Downward, %7.5e, Upward, %7.5e\n", x, calculateDownwardRecursion(xValue: x, order: order, start: start),   calculateUpwardRecursion(xValue: x, order: order))
+        }
         
-    }
+        for index in (0...25)
+        {
+            x2 = Double(index)*step + xmin2
+            downward = calculateDownwardRecursion(xValue: x2, order: order, start: start)
+            upward = calculateUpwardRecursion(xValue: x2, order: order)
+                let top = abs(upward - downward)
+                let bottom = abs(upward) + abs(downward)
+            relDiff = top / bottom
+            
+            guess2 += String(format: "x = %f, Downward = %7.5e, Upward = %7.5e\n, Relative Difference = %7.5e\n", x2, downward, upward, relDiff)
+        }
+        
+        for index in (0...25)
+        {
+            x3 = Double(index)*step + xmin3
+            downward = calculateDownwardRecursion(xValue: x3, order: order, start: start)
+            upward = calculateUpwardRecursion(xValue: x3, order: order)
+                let top = abs(upward - downward)
+                let bottom = abs(upward) + abs(downward)
+            relDiff = top / bottom
+            
+            guess3 += String(format: "x = %f, Downward = %7.5e, Upward = %7.5e\n, Relative Difference = %7.5e\n", x3, downward, upward, relDiff)
+        }
         
 
     }
